@@ -6,7 +6,7 @@
     <title>Jumla Laundry Care - Digital Billing</title>
     <style>
         body { font-family: 'Segoe UI', Arial, sans-serif; margin: 20px; background-color: #f4f7f6; }
-        .container { max-width: 600px; margin: auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .container { max-width: 700px; margin: auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         h2 { text-align: center; color: #2c3e50; margin-bottom: 5px; }
         .sub-text { text-align: center; color: #7f8c8d; font-size: 14px; margin-bottom: 25px; }
         
@@ -14,19 +14,20 @@
         label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 13px; }
         input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
         
-        .item-list { border: 1px solid #eee; padding: 10px; border-radius: 5px; height: 120px; overflow-y: auto; display: grid; grid-template-columns: 1fr 1fr; background: #fafafa; }
-        .item-list label { font-weight: normal; font-size: 13px; display: flex; align-items: center; margin-bottom: 5px; }
-        .item-list input { width: auto; margin-right: 8px; }
+        /* Dynamic Item Section */
+        .item-section { border: 1px solid #eee; padding: 15px; border-radius: 5px; background: #fafafa; margin-bottom: 20px; }
+        .item-row { display: grid; grid-template-columns: 40px 1fr 80px; gap: 10px; align-items: center; margin-bottom: 8px; }
+        .item-row input[type="checkbox"] { width: 20px; height: 20px; }
+        .item-row input[type="number"] { text-align: center; }
 
         .bill-box { background: #2c3e50; color: white; padding: 15px; border-radius: 5px; margin-top: 20px; display: flex; justify-content: space-between; }
-        .total-label { font-size: 18px; }
         .total-price { font-size: 22px; font-weight: bold; color: #27ae60; }
 
         .btn-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
-        button { padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 15px; }
+        button { padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 15px; transition: 0.3s; }
         .save-btn { background: #95a5a6; color: white; }
         .wa-btn { background: #27ae60; color: white; }
-        button:hover { opacity: 0.9; }
+        button:hover { opacity: 0.8; }
     </style>
 </head>
 <body>
@@ -66,16 +67,13 @@
             </div>
         </div>
 
-        <label>Selected Cloths</label>
-        <div class="item-list" id="cItems">
-            <label><input type="checkbox" value="Shirt"> Shirt</label>
-            <label><input type="checkbox" value="Pant"> Pant</label>
-            <label><input type="checkbox" value="Suit"> Suit</label>
-            <label><input type="checkbox" value="Jacket"> Jacket</label>
-            <label><input type="checkbox" value="Blanket"> Blanket</label>
-            <label><input type="checkbox" value="Saree"> Saree</label>
-            <label><input type="checkbox" value="Towel"> Towel</label>
-            <label><input type="checkbox" value="Shoes"> Shoes</label>
+        <label>Cloths Details (Tick / Name / Pieces)</label>
+        <div class="item-section" id="dynamicItems">
+            <div class="item-row">
+                <input type="checkbox" onchange="calculate()">
+                <input type="text" placeholder="Cloth Name (e.g. Shirt)" oninput="addNewRow(this)">
+                <input type="number" placeholder="Pcs" min="1" value="1">
+            </div>
         </div>
 
         <div class="grid" style="margin-top: 15px;">
@@ -87,13 +85,13 @@
                 </select>
             </div>
             <div>
-                <label>Delivery Fee (Manual Change)</label>
+                <label>Delivery Fee (Manual)</label>
                 <input type="number" id="cDelFee" value="0" oninput="calculate()">
             </div>
         </div>
 
         <div class="bill-box">
-            <span class="total-label">Total Amount:</span>
+            <span>Total Amount:</span>
             <span class="total-price">Rs <span id="cTotal">0</span></span>
         </div>
 
@@ -106,6 +104,26 @@
 
 <script>
     const scriptURL = 'https://script.google.com/macros/s/AKfycbxLDwEN4-HN1d-7tA8q508qYGuicVVW54-Mlbm04NWdU1Id8syU7dqhvpZQ4C3hhayG/exec'; // Replace this later!
+
+    // Function to add a new row automatically when the current last row is typed in
+    function addNewRow(input) {
+        const container = document.getElementById('dynamicItems');
+        const rows = container.getElementsByClassName('item-row');
+        const lastRow = rows[rows.length - 1];
+        const lastInput = lastRow.querySelector('input[type="text"]');
+
+        // If the user started typing in the last existing row, create a new empty one
+        if (input === lastInput && input.value.trim() !== "") {
+            const newRow = document.createElement('div');
+            newRow.className = 'item-row';
+            newRow.innerHTML = `
+                <input type="checkbox" onchange="calculate()">
+                <input type="text" placeholder="Cloth Name" oninput="addNewRow(this)">
+                <input type="number" placeholder="Pcs" min="1" value="1">
+            `;
+            container.appendChild(newRow);
+        }
+    }
 
     function applyDelFee() {
         document.getElementById('cDelFee').value = document.getElementById('cDelOption').value;
@@ -120,6 +138,21 @@
         document.getElementById('cTotal').innerText = total.toFixed(2);
     }
 
+    function getItemsList() {
+        const rows = document.querySelectorAll('.item-row');
+        let itemStrings = [];
+        rows.forEach(row => {
+            const checkbox = row.querySelector('input[type="checkbox"]');
+            const name = row.querySelector('input[type="text"]').value;
+            const pcs = row.querySelector('input[type="number"]').value;
+            
+            if (checkbox.checked && name.trim() !== "") {
+                itemStrings.push(`${name} (${pcs} Pcs)`);
+            }
+        });
+        return itemStrings.join(", ");
+    }
+
     function getPlainTextBill() {
         const name = document.getElementById('cName').value;
         const weight = document.getElementById('cWeight').value;
@@ -127,14 +160,13 @@
         const total = document.getElementById('cTotal').innerText;
         const entry = document.getElementById('cDate').value;
         const delivery = document.getElementById('cDelivery').value;
-        const items = Array.from(document.querySelectorAll('#cItems input:checked')).map(i => i.value).join(", ");
+        const itemsList = getItemsList();
 
-        // STRICT PLAIN TEXT FORMAT
         return `JUMLA LAUNDRY CARE\n` +
                `--------------------------\n` +
                `Customer: ${name}\n` +
                `Date: ${entry}\n` +
-               `Items: ${items || 'General'}\n` +
+               `Items: ${itemsList || 'General'}\n` +
                `Service: ${wash}\n` +
                `Weight: ${weight} Kg\n` +
                `Delivery Date: ${delivery}\n` +
@@ -152,6 +184,7 @@
         data.append("Phone", document.getElementById('cPhone').value);
         data.append("Total", document.getElementById('cTotal').innerText);
         data.append("Date", document.getElementById('cDate').value);
+        data.append("Items", getItemsList());
 
         fetch(SCRIPT_URL, { method: 'POST', body: data })
             .then(() => alert("Saved to Sheet!"))
