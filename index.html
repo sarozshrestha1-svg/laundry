@@ -3,201 +3,296 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jumla Laundry Care - Digital Billing</title>
+    <title>Jumla Laundry Care | Digital Billing</title>
     <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 20px; background-color: #f4f7f6; }
-        .container { max-width: 700px; margin: auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #2c3e50; margin-bottom: 5px; }
-        .sub-text { text-align: center; color: #7f8c8d; font-size: 14px; margin-bottom: 25px; }
-        
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
-        label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 13px; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
-        
-        /* Dynamic Item Section */
-        .item-section { border: 1px solid #eee; padding: 15px; border-radius: 5px; background: #fafafa; margin-bottom: 20px; }
-        .item-row { display: grid; grid-template-columns: 40px 1fr 80px; gap: 10px; align-items: center; margin-bottom: 8px; }
-        .item-row input[type="checkbox"] { width: 20px; height: 20px; }
-        .item-row input[type="number"] { text-align: center; }
+        :root {
+            --primary: #2563eb;
+            --success: #22c55e;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --border: #e2e8f0;
+        }
 
-        .bill-box { background: #2c3e50; color: white; padding: 15px; border-radius: 5px; margin-top: 20px; display: flex; justify-content: space-between; }
-        .total-price { font-size: 22px; font-weight: bold; color: #27ae60; }
+        body { 
+            font-family: 'Inter', -apple-system, sans-serif; 
+            margin: 0; 
+            background-color: #f1f5f9; 
+            color: var(--dark);
+            display: flex;
+            justify-content: center;
+        }
 
-        .btn-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
-        button { padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 15px; transition: 0.3s; }
-        .save-btn { background: #95a5a6; color: white; }
-        .wa-btn { background: #27ae60; color: white; }
-        button:hover { opacity: 0.8; }
+        .app-container { 
+            width: 100%;
+            max-width: 500px; 
+            background: white; 
+            min-height: 100vh;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            padding-bottom: 40px;
+        }
+
+        header {
+            background: var(--primary);
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            border-radius: 0 0 25px 25px;
+        }
+
+        header h1 { margin: 0; font-size: 22px; text-transform: uppercase; letter-spacing: 1px; }
+        header p { margin: 5px 0 0; opacity: 0.9; font-size: 14px; }
+
+        .content { padding: 20px; }
+
+        .section-title { 
+            font-size: 12px; 
+            font-weight: 700; 
+            color: #64748b; 
+            text-transform: uppercase; 
+            margin: 25px 0 10px 5px;
+            letter-spacing: 0.5px;
+        }
+
+        .card {
+            background: var(--light);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .input-group { margin-bottom: 15px; }
+        label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: #475569; }
+        
+        input, select { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1.5px solid var(--border); 
+            border-radius: 10px; 
+            font-size: 15px; 
+            transition: all 0.2s;
+            box-sizing: border-box;
+            background: white;
+        }
+
+        input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+
+        /* Dynamic Item List */
+        .item-row { 
+            display: grid; 
+            grid-template-columns: 40px 1fr 70px; 
+            gap: 10px; 
+            margin-bottom: 10px; 
+            align-items: center;
+        }
+        
+        .checkbox-custom {
+            width: 22px; height: 22px;
+            accent-color: var(--primary);
+        }
+
+        .pcs-input { text-align: center; font-weight: 600; }
+
+        /* Floating Footer Calculation */
+        .footer-billing {
+            position: sticky;
+            bottom: 0;
+            background: white;
+            padding: 20px;
+            border-top: 1px solid var(--border);
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.05);
+        }
+
+        .price-summary {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .price-summary span:first-child { font-weight: 600; color: #64748b; }
+        .price-summary .total { font-size: 24px; font-weight: 800; color: var(--primary); }
+
+        .wa-button {
+            background: var(--success);
+            color: white;
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: transform 0.2s;
+        }
+
+        .wa-button:active { transform: scale(0.98); }
+
+        /* Mobile Adjustments */
+        @media (max-width: 480px) {
+            .app-container { box-shadow: none; }
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>Jumla Laundry Care</h2>
-    <p class="sub-text">Digital Billing System | 9866631883</p>
+<div class="app-container">
+    <header>
+        <h1>Jumla Laundry Care</h1>
+        <p>Digital Receipt System • 9866631883</p>
+    </header>
 
-    <form id="laundryForm">
-        <div class="grid">
-            <div>
-                <label>Customer Name</label>
-                <input type="text" id="cName" required>
+    <div class="content">
+        <div class="section-title">Customer Details</div>
+        <div class="card">
+            <div class="input-group">
+                <label>Name</label>
+                <input type="text" id="cName" placeholder="Enter name">
             </div>
-            <div>
+            <div class="input-group">
                 <label>WhatsApp Number</label>
-                <input type="text" id="cPhone" placeholder="98XXXXXXXX" required>
+                <input type="tel" id="cPhone" placeholder="98XXXXXXXX">
             </div>
-            <div>
+        </div>
+
+        <div class="section-title">Service Details</div>
+        <div class="card">
+            <div class="input-group">
                 <label>Weight (Kg)</label>
                 <input type="number" id="cWeight" step="0.1" value="0" oninput="calculate()">
             </div>
-            <div>
-                <label>Service Type</label>
+            <div class="input-group">
+                <label>Wash Type</label>
                 <select id="cService" onchange="calculate()">
                     <option value="100">Normal Wash (Rs 100/kg)</option>
                     <option value="200">Express Wash (Rs 200/kg)</option>
                 </select>
             </div>
-            <div>
-                <label>Entry Date (Nepali)</label>
-                <input type="text" id="cDate" placeholder="2083-01-01">
-            </div>
-            <div>
-                <label>Delivery Date</label>
-                <input type="text" id="cDelivery" placeholder="2083-01-03">
+            <div style="display: flex; gap: 10px;">
+                <div class="input-group" style="flex: 1;">
+                    <label>Entry Date (BS)</label>
+                    <input type="text" id="cDate" placeholder="2083-01-01">
+                </div>
+                <div class="input-group" style="flex: 1;">
+                    <label>Delivery Date</label>
+                    <input type="text" id="cDelivery" placeholder="2083-01-03">
+                </div>
             </div>
         </div>
 
-        <label>Cloths Details (Tick / Name / Pieces)</label>
-        <div class="item-section" id="dynamicItems">
+        <div class="section-title">Cloth Items (Tick & Set Pcs)</div>
+        <div class="card" id="dynamicItems">
             <div class="item-row">
-                <input type="checkbox" onchange="calculate()">
-                <input type="text" placeholder="Cloth Name (e.g. Shirt)" oninput="addNewRow(this)">
-                <input type="number" placeholder="Pcs" min="1" value="1">
+                <input type="checkbox" class="checkbox-custom" onchange="calculate()">
+                <input type="text" placeholder="Item name" oninput="addNewRow(this)">
+                <input type="number" class="pcs-input" value="1" min="1">
             </div>
         </div>
 
-        <div class="grid" style="margin-top: 15px;">
-            <div>
-                <label>Delivery Option</label>
-                <select id="cDelOption" onchange="applyDelFee()">
-                    <option value="0">Store Drop (Rs 0)</option>
-                    <option value="100">Pick up/Delivery (Rs 100)</option>
-                </select>
-            </div>
-            <div>
+        <div class="section-title">Logistics</div>
+        <div class="card">
+            <div class="input-group">
                 <label>Delivery Fee (Manual)</label>
                 <input type="number" id="cDelFee" value="0" oninput="calculate()">
             </div>
         </div>
+    </div>
 
-        <div class="bill-box">
-            <span>Total Amount:</span>
-            <span class="total-price">Rs <span id="cTotal">0</span></span>
+    <div class="footer-billing">
+        <div class="price-summary">
+            <span>Amount Payable</span>
+            <span class="total">Rs <span id="cTotal">0.00</span></span>
         </div>
-
-        <div class="btn-container">
-            <button type="button" class="save-btn" onclick="saveData()">1. SAVE DATA</button>
-            <button type="button" class="wa-btn" onclick="sendWA()">2. SEND TO WHATSAPP</button>
-        </div>
-    </form>
+        <button type="button" class="wa-button" onclick="finalizeOrder()">
+            Confirm & Send WhatsApp
+        </button>
+    </div>
 </div>
 
 <script>
+    // Replace with your Google Apps Script URL
     const scriptURL = 'https://script.google.com/macros/s/AKfycbxLDwEN4-HN1d-7tA8q508qYGuicVVW54-Mlbm04NWdU1Id8syU7dqhvpZQ4C3hhayG/exec'; // Replace this later!
-
-    // Function to add a new row automatically when the current last row is typed in
-    function addNewRow(input) {
-        const container = document.getElementById('dynamicItems');
-        const rows = container.getElementsByClassName('item-row');
-        const lastRow = rows[rows.length - 1];
-        const lastInput = lastRow.querySelector('input[type="text"]');
-
-        // If the user started typing in the last existing row, create a new empty one
-        if (input === lastInput && input.value.trim() !== "") {
-            const newRow = document.createElement('div');
-            newRow.className = 'item-row';
-            newRow.innerHTML = `
-                <input type="checkbox" onchange="calculate()">
-                <input type="text" placeholder="Cloth Name" oninput="addNewRow(this)">
-                <input type="number" placeholder="Pcs" min="1" value="1">
-            `;
-            container.appendChild(newRow);
-        }
-    }
-
-    function applyDelFee() {
-        document.getElementById('cDelFee').value = document.getElementById('cDelOption').value;
-        calculate();
-    }
 
     function calculate() {
         const weight = parseFloat(document.getElementById('cWeight').value) || 0;
         const rate = parseFloat(document.getElementById('cService').value);
         const del = parseFloat(document.getElementById('cDelFee').value) || 0;
         const total = (weight * rate) + del;
-        document.getElementById('cTotal').innerText = total.toFixed(2);
+        document.getElementById('cTotal').innerText = total.toLocaleString('en-IN', {minimumFractionDigits: 2});
+    }
+
+    function addNewRow(input) {
+        const container = document.getElementById('dynamicItems');
+        const rows = container.getElementsByClassName('item-row');
+        const lastInput = rows[rows.length - 1].querySelector('input[type="text"]');
+
+        if (input === lastInput && input.value.trim() !== "") {
+            const newRow = document.createElement('div');
+            newRow.className = 'item-row';
+            newRow.innerHTML = `
+                <input type="checkbox" class="checkbox-custom" onchange="calculate()">
+                <input type="text" placeholder="Item name" oninput="addNewRow(this)">
+                <input type="number" class="pcs-input" value="1" min="1">
+            `;
+            container.appendChild(newRow);
+        }
     }
 
     function getItemsList() {
         const rows = document.querySelectorAll('.item-row');
-        let itemStrings = [];
+        let selected = [];
         rows.forEach(row => {
-            const checkbox = row.querySelector('input[type="checkbox"]');
+            const check = row.querySelector('input[type="checkbox"]');
             const name = row.querySelector('input[type="text"]').value;
             const pcs = row.querySelector('input[type="number"]').value;
-            
-            if (checkbox.checked && name.trim() !== "") {
-                itemStrings.push(`${name} (${pcs} Pcs)`);
-            }
+            if (check.checked && name.trim()) selected.push(`${name} (${pcs} Pcs)`);
         });
-        return itemStrings.join(", ");
+        return selected.join(", ");
     }
 
     function getPlainTextBill() {
-        const name = document.getElementById('cName').value;
-        const weight = document.getElementById('cWeight').value;
-        const wash = document.getElementById('cService').options[document.getElementById('cService').selectedIndex].text;
-        const total = document.getElementById('cTotal').innerText;
-        const entry = document.getElementById('cDate').value;
-        const delivery = document.getElementById('cDelivery').value;
-        const itemsList = getItemsList();
-
         return `JUMLA LAUNDRY CARE\n` +
                `--------------------------\n` +
-               `Customer: ${name}\n` +
-               `Date: ${entry}\n` +
-               `Items: ${itemsList || 'General'}\n` +
-               `Service: ${wash}\n` +
-               `Weight: ${weight} Kg\n` +
-               `Delivery Date: ${delivery}\n` +
+               `Customer: ${document.getElementById('cName').value}\n` +
+               `Date: ${document.getElementById('cDate').value}\n` +
+               `Items: ${getItemsList() || 'General'}\n` +
+               `Service: ${document.getElementById('cService').options[document.getElementById('cService').selectedIndex].text}\n` +
+               `Weight: ${document.getElementById('cWeight').value} Kg\n` +
+               `Delivery: ${document.getElementById('cDelivery').value}\n` +
                `--------------------------\n` +
-               `TOTAL BILL: Rs ${total}\n` +
+               `TOTAL BILL: Rs ${document.getElementById('cTotal').innerText}\n` +
                `--------------------------\n` +
                `Thank you! Visit again.`;
     }
 
-    function saveData() {
-        if (!document.getElementById('cName').value) return alert("Please enter Customer Name");
+    async function finalizeOrder() {
+        const name = document.getElementById('cName').value;
+        const phone = document.getElementById('cPhone').value;
         
+        if(!name || !phone) {
+            alert("Please fill in Name and Phone number");
+            return;
+        }
+
+        // 1. SAVE TO GOOGLE SHEET AUTOMATICALLY
         const data = new FormData();
-        data.append("Name", document.getElementById('cName').value);
-        data.append("Phone", document.getElementById('cPhone').value);
+        data.append("Name", name);
+        data.append("Phone", phone);
         data.append("Total", document.getElementById('cTotal').innerText);
         data.append("Date", document.getElementById('cDate').value);
         data.append("Items", getItemsList());
 
-        fetch(SCRIPT_URL, { method: 'POST', body: data })
-            .then(() => alert("Saved to Sheet!"))
-            .catch(() => alert("Error saving."));
-    }
+        // We run fetch without waiting (background) to keep UI fast
+        fetch(SCRIPT_URL, { method: 'POST', body: data }).catch(e => console.log("Sheet error", e));
 
-    function sendWA() {
-        const phone = document.getElementById('cPhone').value;
+        // 2. REDIRECT TO WHATSAPP
         const bill = getPlainTextBill();
-        if (!phone) return alert("Please enter Phone Number");
-
-        const url = `https://wa.me/977${phone}?text=${encodeURIComponent(bill)}`;
-        window.open(url, '_blank');
+        const waUrl = `https://wa.me/977${phone}?text=${encodeURIComponent(bill)}`;
+        window.open(waUrl, '_blank');
     }
 </script>
 
