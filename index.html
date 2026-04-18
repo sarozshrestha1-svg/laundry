@@ -3,170 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jumla Laundry Care - Digital Booking</title>
+    <title>Jumla Laundry Care - Digital Billing</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f9; }
-        .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        h1, h3 { text-align: center; color: #333; margin-bottom: 5px; }
-        .contact-info { text-align: center; color: #666; margin-bottom: 20px; font-weight: bold; }
-        .form-group { margin-bottom: 15px; }
-        label { font-weight: bold; display: block; margin-bottom: 5px; }
-        input[type="text"], input[type="number"], input[type="date"] { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .checkbox-group { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; border: 1px solid #ccc; padding: 15px; border-radius: 4px; height: 200px; overflow-y: auto; }
-        .checkbox-group label { font-weight: normal; display: inline-block; }
-        .billing-section { background: #e9ecef; padding: 15px; border-radius: 4px; margin-top: 20px; }
-        .total-bill { font-size: 1.5em; font-weight: bold; color: #28a745; text-align: right; }
-        button { background: #007bff; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 4px; cursor: pointer; width: 100%; margin-top: 20px; }
-        button:hover { background: #0056b3; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 20px; background-color: #f4f7f6; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #2c3e50; margin-bottom: 5px; }
+        .sub-text { text-align: center; color: #7f8c8d; font-size: 14px; margin-bottom: 25px; }
+        
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px; }
+        label { display: block; font-weight: bold; margin-bottom: 5px; font-size: 13px; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; }
+        
+        .item-list { border: 1px solid #eee; padding: 10px; border-radius: 5px; height: 120px; overflow-y: auto; display: grid; grid-template-columns: 1fr 1fr; background: #fafafa; }
+        .item-list label { font-weight: normal; font-size: 13px; display: flex; align-items: center; margin-bottom: 5px; }
+        .item-list input { width: auto; margin-right: 8px; }
+
+        .bill-box { background: #2c3e50; color: white; padding: 15px; border-radius: 5px; margin-top: 20px; display: flex; justify-content: space-between; }
+        .total-label { font-size: 18px; }
+        .total-price { font-size: 22px; font-weight: bold; color: #27ae60; }
+
+        .btn-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+        button { padding: 12px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 15px; }
+        .save-btn { background: #95a5a6; color: white; }
+        .wa-btn { background: #27ae60; color: white; }
+        button:hover { opacity: 0.9; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Jumla Laundry Care</h1>
-    <div class="contact-info">Phone: 9866631883</div>
+    <h2>Jumla Laundry Care</h2>
+    <p class="sub-text">Digital Billing System | 9866631883</p>
 
     <form id="laundryForm">
-        <div class="grid-2">
-            <div class="form-group">
-                <label>Order Number:</label>
-                <input type="text" id="orderNo" name="orderNo" required>
+        <div class="grid">
+            <div>
+                <label>Customer Name</label>
+                <input type="text" id="cName" required>
             </div>
-            <div class="form-group">
-                <label>Customer Name:</label>
-                <input type="text" id="customerName" name="customerName" required>
+            <div>
+                <label>WhatsApp Number</label>
+                <input type="text" id="cPhone" placeholder="98XXXXXXXX" required>
             </div>
-            <div class="form-group">
-                <label>Customer Number:</label>
-                <input type="text" id="customerPhone" name="customerPhone" required>
+            <div>
+                <label>Weight (Kg)</label>
+                <input type="number" id="cWeight" step="0.1" value="0" oninput="calculate()">
             </div>
-            <div class="form-group">
-                <label>Customer Address:</label>
-                <input type="text" id="customerAddress" name="customerAddress">
+            <div>
+                <label>Service Type</label>
+                <select id="cService" onchange="calculate()">
+                    <option value="100">Normal Wash (Rs 100/kg)</option>
+                    <option value="200">Express Wash (Rs 200/kg)</option>
+                </select>
             </div>
-            <div class="form-group">
-                <label>Request Date (Manual/Nepali Date supported):</label>
-                <input type="text" id="requestDate" name="requestDate" placeholder="e.g., 2081-01-05" required>
+            <div>
+                <label>Entry Date (Nepali)</label>
+                <input type="text" id="cDate" placeholder="2083-01-01">
             </div>
-            <div class="form-group">
-                <label>Delivery Date:</label>
-                <input type="text" id="deliveryDate" name="deliveryDate" placeholder="e.g., 2081-01-06" required>
-            </div>
-        </div>
-
-        <div class="form-group">
-            <label>Select Items:</label>
-            <div class="checkbox-group">
-                <label><input type="checkbox" name="items" value="Suit"> Suit</label>
-                <label><input type="checkbox" name="items" value="Daura Salwar"> Daura Salwar</label>
-                <label><input type="checkbox" name="items" value="Shirts"> Shirts</label>
-                <label><input type="checkbox" name="items" value="T-Shirt"> T-Shirt</label>
-                <label><input type="checkbox" name="items" value="Polo Shirt"> Polo Shirt</label>
-                <label><input type="checkbox" name="items" value="Jacket"> Jacket</label>
-                <label><input type="checkbox" name="items" value="Coat/Blazer"> Coat/Blazer</label>
-                <label><input type="checkbox" name="items" value="Track Pant"> Track Pant</label>
-                <label><input type="checkbox" name="items" value="Jeans"> Jeans</label>
-                <label><input type="checkbox" name="items" value="Trousers"> Trousers</label>
-                <label><input type="checkbox" name="items" value="Dress"> Dress</label>
-                <label><input type="checkbox" name="items" value="Saree"> Saree</label>
-                <label><input type="checkbox" name="items" value="Kurta/Kurti"> Kurta/Kurti</label>
-                <label><input type="checkbox" name="items" value="Bedsheet"> Bedsheet</label>
-                <label><input type="checkbox" name="items" value="Quilt/Blanket"> Quilt/Blanket</label>
-                <label><input type="checkbox" name="items" value="Duvet Cover"> Duvet Cover</label>
-                <label><input type="checkbox" name="items" value="Towels"> Towels</label>
-                
+            <div>
+                <label>Delivery Date</label>
+                <input type="text" id="cDelivery" placeholder="2083-01-03">
             </div>
         </div>
 
-        <div class="billing-section">
-            <h3>Billing Details</h3>
-            <div class="grid-2">
-                <div class="form-group">
-                    <label>Total Pcs:</label>
-                    <input type="number" id="totalPcs" name="totalPcs" value="0" min="0">
-                </div>
-                <div class="form-group">
-                    <label>Total Weight (Kg):</label>
-                    <input type="number" id="weight" name="weight" step="0.1" value="0" oninput="calculateTotal()" required>
-                </div>
-                <div class="form-group">
-                    <label>Service Type:</label>
-                    <select id="serviceType" name="serviceType" onchange="calculateTotal()" style="width:100%; padding:8px;">
-                        <option value="normal">Normal Wash (Rs 100/kg)</option>
-                        <option value="express">Express Wash (Rs 200/kg)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Delivery Method:</label>
-                    <select id="deliveryMethod" name="deliveryMethod" onchange="toggleDeliveryFee(); calculateTotal()" style="width:100%; padding:8px;">
-                        <option value="drop">Store Drop (No Fee)</option>
-                        <option value="pickup">Pick up (Delivery Fee applies)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Delivery Fee (Rs):</label>
-                    <input type="number" id="deliveryFee" name="deliveryFee" value="0" oninput="calculateTotal()" disabled>
-                </div>
+        <label>Selected Cloths</label>
+        <div class="item-list" id="cItems">
+            <label><input type="checkbox" value="Shirt"> Shirt</label>
+            <label><input type="checkbox" value="Pant"> Pant</label>
+            <label><input type="checkbox" value="Suit"> Suit</label>
+            <label><input type="checkbox" value="Jacket"> Jacket</label>
+            <label><input type="checkbox" value="Blanket"> Blanket</label>
+            <label><input type="checkbox" value="Saree"> Saree</label>
+            <label><input type="checkbox" value="Towel"> Towel</label>
+            <label><input type="checkbox" value="Shoes"> Shoes</label>
+        </div>
+
+        <div class="grid" style="margin-top: 15px;">
+            <div>
+                <label>Delivery Option</label>
+                <select id="cDelOption" onchange="applyDelFee()">
+                    <option value="0">Store Drop (Rs 0)</option>
+                    <option value="100">Pick up/Delivery (Rs 100)</option>
+                </select>
             </div>
-            <div class="total-bill">
-                Total Bill: Rs <span id="displayTotal">0</span>
-                <input type="hidden" id="finalTotal" name="finalTotal" value="0">
+            <div>
+                <label>Delivery Fee (Manual Change)</label>
+                <input type="number" id="cDelFee" value="0" oninput="calculate()">
             </div>
         </div>
 
-        <button type="submit">Confirm Order & Save Data</button>
+        <div class="bill-box">
+            <span class="total-label">Total Amount:</span>
+            <span class="total-price">Rs <span id="cTotal">0</span></span>
+        </div>
+
+        <div class="btn-container">
+            <button type="button" class="save-btn" onclick="saveData()">1. SAVE DATA</button>
+            <button type="button" class="wa-btn" onclick="sendWA()">2. SEND TO WHATSAPP</button>
+        </div>
     </form>
 </div>
 
 <script>
-    function toggleDeliveryFee() {
-        const method = document.getElementById("deliveryMethod").value;
-        const feeInput = document.getElementById("deliveryFee");
-        if (method === "pickup") {
-            feeInput.disabled = false;
-            if (feeInput.value == 0) feeInput.value = 100; // Default Rs 100
-        } else {
-            feeInput.disabled = true;
-            feeInput.value = 0;
-        }
-    }
-
-    function calculateTotal() {
-        const weight = parseFloat(document.getElementById("weight").value) || 0;
-        const serviceType = document.getElementById("serviceType").value;
-        const deliveryFee = parseFloat(document.getElementById("deliveryFee").value) || 0;
-        
-        const unitPrice = serviceType === "express" ? 200 : 100;
-        
-        const total = (weight * unitPrice) + deliveryFee;
-        
-        document.getElementById("displayTotal").innerText = total.toFixed(2);
-        document.getElementById("finalTotal").value = total.toFixed(2);
-    }
-
-    // Connect to Google Sheets Web App URL
     const scriptURL = 'https://script.google.com/macros/s/AKfycbxLDwEN4-HN1d-7tA8q508qYGuicVVW54-Mlbm04NWdU1Id8syU7dqhvpZQ4C3hhayG/exec'; // Replace this later!
-    const form = document.forms['laundryForm'];
 
-    form.addEventListener('submit', e => {
-        e.preventDefault();
-        
-        // Gather selected checkboxes into a single string
-        const checkedItems = Array.from(document.querySelectorAll('input[name="items"]:checked')).map(cb => cb.value).join(', ');
-        
-        // Create FormData
-        const formData = new FormData(form);
-        formData.append('selectedItems', checkedItems);
+    function applyDelFee() {
+        document.getElementById('cDelFee').value = document.getElementById('cDelOption').value;
+        calculate();
+    }
 
-        fetch(scriptURL, { method: 'POST', body: formData})
-            .then(response => {
-                alert("Order Confirmed & Saved to Google Sheets!");
-                form.reset();
-                calculateTotal();
-            })
-            .catch(error => console.error('Error!', error.message));
-    });
+    function calculate() {
+        const weight = parseFloat(document.getElementById('cWeight').value) || 0;
+        const rate = parseFloat(document.getElementById('cService').value);
+        const del = parseFloat(document.getElementById('cDelFee').value) || 0;
+        const total = (weight * rate) + del;
+        document.getElementById('cTotal').innerText = total.toFixed(2);
+    }
+
+    function getPlainTextBill() {
+        const name = document.getElementById('cName').value;
+        const weight = document.getElementById('cWeight').value;
+        const wash = document.getElementById('cService').options[document.getElementById('cService').selectedIndex].text;
+        const total = document.getElementById('cTotal').innerText;
+        const entry = document.getElementById('cDate').value;
+        const delivery = document.getElementById('cDelivery').value;
+        const items = Array.from(document.querySelectorAll('#cItems input:checked')).map(i => i.value).join(", ");
+
+        // STRICT PLAIN TEXT FORMAT
+        return `JUMLA LAUNDRY CARE\n` +
+               `--------------------------\n` +
+               `Customer: ${name}\n` +
+               `Date: ${entry}\n` +
+               `Items: ${items || 'General'}\n` +
+               `Service: ${wash}\n` +
+               `Weight: ${weight} Kg\n` +
+               `Delivery Date: ${delivery}\n` +
+               `--------------------------\n` +
+               `TOTAL BILL: Rs ${total}\n` +
+               `--------------------------\n` +
+               `Thank you! Visit again.`;
+    }
+
+    function saveData() {
+        if (!document.getElementById('cName').value) return alert("Please enter Customer Name");
+        
+        const data = new FormData();
+        data.append("Name", document.getElementById('cName').value);
+        data.append("Phone", document.getElementById('cPhone').value);
+        data.append("Total", document.getElementById('cTotal').innerText);
+        data.append("Date", document.getElementById('cDate').value);
+
+        fetch(SCRIPT_URL, { method: 'POST', body: data })
+            .then(() => alert("Saved to Sheet!"))
+            .catch(() => alert("Error saving."));
+    }
+
+    function sendWA() {
+        const phone = document.getElementById('cPhone').value;
+        const bill = getPlainTextBill();
+        if (!phone) return alert("Please enter Phone Number");
+
+        const url = `https://wa.me/977${phone}?text=${encodeURIComponent(bill)}`;
+        window.open(url, '_blank');
+    }
 </script>
 
 </body>
