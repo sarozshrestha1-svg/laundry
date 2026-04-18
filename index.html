@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jumla Laundry Care - Digital Booking</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f9; }
+        .container { max-width: 800px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1, h3 { text-align: center; color: #333; margin-bottom: 5px; }
+        .contact-info { text-align: center; color: #666; margin-bottom: 20px; font-weight: bold; }
+        .form-group { margin-bottom: 15px; }
+        label { font-weight: bold; display: block; margin-bottom: 5px; }
+        input[type="text"], input[type="number"], input[type="date"] { width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .checkbox-group { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; border: 1px solid #ccc; padding: 15px; border-radius: 4px; height: 200px; overflow-y: auto; }
+        .checkbox-group label { font-weight: normal; display: inline-block; }
+        .billing-section { background: #e9ecef; padding: 15px; border-radius: 4px; margin-top: 20px; }
+        .total-bill { font-size: 1.5em; font-weight: bold; color: #28a745; text-align: right; }
+        button { background: #007bff; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 4px; cursor: pointer; width: 100%; margin-top: 20px; }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Jumla Laundry Care</h1>
+    <div class="contact-info">Phone: 9866631883</div>
+
+    <form id="laundryForm">
+        <div class="grid-2">
+            <div class="form-group">
+                <label>Order Number:</label>
+                <input type="text" id="orderNo" name="orderNo" required>
+            </div>
+            <div class="form-group">
+                <label>Customer Name:</label>
+                <input type="text" id="customerName" name="customerName" required>
+            </div>
+            <div class="form-group">
+                <label>Customer Number:</label>
+                <input type="text" id="customerPhone" name="customerPhone" required>
+            </div>
+            <div class="form-group">
+                <label>Customer Address:</label>
+                <input type="text" id="customerAddress" name="customerAddress">
+            </div>
+            <div class="form-group">
+                <label>Request Date (Manual/Nepali Date supported):</label>
+                <input type="text" id="requestDate" name="requestDate" placeholder="e.g., 2081-01-05" required>
+            </div>
+            <div class="form-group">
+                <label>Delivery Date:</label>
+                <input type="text" id="deliveryDate" name="deliveryDate" placeholder="e.g., 2081-01-06" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Select Items:</label>
+            <div class="checkbox-group">
+                <label><input type="checkbox" name="items" value="Suit"> Suit</label>
+                <label><input type="checkbox" name="items" value="Daura Salwar"> Daura Salwar</label>
+                <label><input type="checkbox" name="items" value="Shirts"> Shirts</label>
+                <label><input type="checkbox" name="items" value="T-Shirt"> T-Shirt</label>
+                <label><input type="checkbox" name="items" value="Polo Shirt"> Polo Shirt</label>
+                <label><input type="checkbox" name="items" value="Jacket"> Jacket</label>
+                <label><input type="checkbox" name="items" value="Coat/Blazer"> Coat/Blazer</label>
+                <label><input type="checkbox" name="items" value="Track Pant"> Track Pant</label>
+                <label><input type="checkbox" name="items" value="Jeans"> Jeans</label>
+                <label><input type="checkbox" name="items" value="Trousers"> Trousers</label>
+                <label><input type="checkbox" name="items" value="Dress"> Dress</label>
+                <label><input type="checkbox" name="items" value="Saree"> Saree</label>
+                <label><input type="checkbox" name="items" value="Kurta/Kurti"> Kurta/Kurti</label>
+                <label><input type="checkbox" name="items" value="Bedsheet"> Bedsheet</label>
+                <label><input type="checkbox" name="items" value="Quilt/Blanket"> Quilt/Blanket</label>
+                <label><input type="checkbox" name="items" value="Duvet Cover"> Duvet Cover</label>
+                <label><input type="checkbox" name="items" value="Towels"> Towels</label>
+                
+            </div>
+        </div>
+
+        <div class="billing-section">
+            <h3>Billing Details</h3>
+            <div class="grid-2">
+                <div class="form-group">
+                    <label>Total Pcs:</label>
+                    <input type="number" id="totalPcs" name="totalPcs" value="0" min="0">
+                </div>
+                <div class="form-group">
+                    <label>Total Weight (Kg):</label>
+                    <input type="number" id="weight" name="weight" step="0.1" value="0" oninput="calculateTotal()" required>
+                </div>
+                <div class="form-group">
+                    <label>Service Type:</label>
+                    <select id="serviceType" name="serviceType" onchange="calculateTotal()" style="width:100%; padding:8px;">
+                        <option value="normal">Normal Wash (Rs 100/kg)</option>
+                        <option value="express">Express Wash (Rs 200/kg)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Delivery Method:</label>
+                    <select id="deliveryMethod" name="deliveryMethod" onchange="toggleDeliveryFee(); calculateTotal()" style="width:100%; padding:8px;">
+                        <option value="drop">Store Drop (No Fee)</option>
+                        <option value="pickup">Pick up (Delivery Fee applies)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Delivery Fee (Rs):</label>
+                    <input type="number" id="deliveryFee" name="deliveryFee" value="0" oninput="calculateTotal()" disabled>
+                </div>
+            </div>
+            <div class="total-bill">
+                Total Bill: Rs <span id="displayTotal">0</span>
+                <input type="hidden" id="finalTotal" name="finalTotal" value="0">
+            </div>
+        </div>
+
+        <button type="submit">Confirm Order & Save Data</button>
+    </form>
+</div>
+
+<script>
+    function toggleDeliveryFee() {
+        const method = document.getElementById("deliveryMethod").value;
+        const feeInput = document.getElementById("deliveryFee");
+        if (method === "pickup") {
+            feeInput.disabled = false;
+            if (feeInput.value == 0) feeInput.value = 100; // Default Rs 100
+        } else {
+            feeInput.disabled = true;
+            feeInput.value = 0;
+        }
+    }
+
+    function calculateTotal() {
+        const weight = parseFloat(document.getElementById("weight").value) || 0;
+        const serviceType = document.getElementById("serviceType").value;
+        const deliveryFee = parseFloat(document.getElementById("deliveryFee").value) || 0;
+        
+        const unitPrice = serviceType === "express" ? 200 : 100;
+        
+        const total = (weight * unitPrice) + deliveryFee;
+        
+        document.getElementById("displayTotal").innerText = total.toFixed(2);
+        document.getElementById("finalTotal").value = total.toFixed(2);
+    }
+
+    // Connect to Google Sheets Web App URL
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxLDwEN4-HN1d-7tA8q508qYGuicVVW54-Mlbm04NWdU1Id8syU7dqhvpZQ4C3hhayG/exec'; // Replace this later!
+    const form = document.forms['laundryForm'];
+
+    form.addEventListener('submit', e => {
+        e.preventDefault();
+        
+        // Gather selected checkboxes into a single string
+        const checkedItems = Array.from(document.querySelectorAll('input[name="items"]:checked')).map(cb => cb.value).join(', ');
+        
+        // Create FormData
+        const formData = new FormData(form);
+        formData.append('selectedItems', checkedItems);
+
+        fetch(scriptURL, { method: 'POST', body: formData})
+            .then(response => {
+                alert("Order Confirmed & Saved to Google Sheets!");
+                form.reset();
+                calculateTotal();
+            })
+            .catch(error => console.error('Error!', error.message));
+    });
+</script>
+
+</body>
+</html>
