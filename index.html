@@ -458,7 +458,7 @@
     <script>
       // Replace with your Google Apps Script URL
       const scriptURL =
-        "https://script.google.com/macros/s/AKfycbxLDwEN4-HN1d-7tA8q508qYGuicVVW54-Mlbm04NWdU1Id8syU7dqhvpZQ4C3hhayG/exec";
+        "https://script.google.com/macros/s/AKfycbyhnZzFiPutNtMKV4PJP0N3rveErnRxdGbfwyDw-wvdmZVzz1cGja9UvjNYWD9F1uvXmw/exec";
 
       function calculate() {
         const weight =
@@ -543,10 +543,18 @@
         data.append("Phone", phone);
         data.append("Total", document.getElementById("cTotal").innerText);
         data.append("Date", document.getElementById("cDate").value);
+        data.append("Delivery", document.getElementById("cDelivery").value);
+        data.append("Weight", document.getElementById("cWeight").value);
+        data.append(
+          "Service",
+          document.getElementById("cService").options[
+            document.getElementById("cService").selectedIndex
+          ].text,
+        );
         data.append("Items", getItemsList());
 
         // Background fetch to keep UI responsive. Fixed SCRIPT_URL to scriptURL.
-        fetch(scriptURL, { method: "POST", body: data }).catch((e) =>
+        fetch(scriptURL, { method: "POST", body: data, mode: "no-cors" }).catch((e) =>
           console.log("Sheet error", e),
         );
 
