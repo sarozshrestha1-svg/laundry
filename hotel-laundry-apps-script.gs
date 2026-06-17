@@ -1,13 +1,13 @@
 /**
- * Add this hotel route to the same Apps Script web app used by the existing
- * laundry page. Keep the old customer-billing doPost logic for all other posts.
+ * Standalone Google Apps Script web app for hotel laundry collection.
+ * Deploy as a Web App and paste the /exec URL into hotel-laundry.html.
  */
 
 // If this Apps Script is bound to the working laundry Google Sheet, leave this
 // empty. If it is a standalone Apps Script, paste the native Google Sheet ID.
 // The provided reference file is an .xlsx upload, so convert it to Google Sheets
 // format first if you want this script to write into that workbook.
-const HOTEL_LAUNDRY_SPREADSHEET_ID = "";
+const HOTEL_LAUNDRY_SPREADSHEET_ID = "1v_bBUgIPO26xWM4TOm4kjDcvP8RPeg17FHO5ZqNEFqI";
 
 const HOTEL_LAUNDRY_SHEETS = {
   "Hotel Pauwa": "Hotel Pauwa",
@@ -23,6 +23,22 @@ const HOTEL_LAUNDRY_HEADERS = [
   "Note",
   "Created timestamp",
 ];
+
+function doGet() {
+  return ContentService.createTextOutput(
+    JSON.stringify({ ok: true, app: "Jumla Laundry Hotel Records" }),
+  ).setMimeType(ContentService.MimeType.JSON);
+}
+
+function doPost(e) {
+  try {
+    return handleHotelLaundryPost(e);
+  } catch (error) {
+    return ContentService.createTextOutput(
+      JSON.stringify({ ok: false, error: error.message }),
+    ).setMimeType(ContentService.MimeType.JSON);
+  }
+}
 
 function handleHotelLaundryPost(e) {
   const data = e.parameter || {};
@@ -87,12 +103,12 @@ function getOrCreateHotelLaundrySheet_(spreadsheet, sheetName) {
   return sheet;
 }
 
-/**
- * In your existing doPost(e), add this at the very top:
- *
- * if (e.parameter && e.parameter["Record Type"] === "Hotel Laundry") {
- *   return handleHotelLaundryPost(e);
- * }
- *
- * Then leave the old laundry app saving code below it unchanged.
- */
+function setupHotelLaundrySheets() {
+  const spreadsheet = getHotelLaundrySpreadsheet_();
+
+  Object.keys(HOTEL_LAUNDRY_SHEETS).forEach(function (hotelName) {
+    getOrCreateHotelLaundrySheet_(spreadsheet, HOTEL_LAUNDRY_SHEETS[hotelName]);
+  });
+
+  return "Hotel laundry sheets are ready.";
+}

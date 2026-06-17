@@ -6,7 +6,7 @@ New GitHub Pages page:
 
 ## Google Sheets
 
-The hotel app sends these fields to the same Apps Script web app URL used by the existing laundry page:
+The hotel app sends these fields to a separate hotel-only Apps Script web app:
 
 - Date
 - Hotel Name
@@ -17,28 +17,24 @@ The hotel app sends these fields to the same Apps Script web app URL used by the
 - Target Sheet
 - Record Type
 
-Each hotel should write to its own sheet tab:
+Records are saved in this native Google Sheet:
+
+`https://docs.google.com/spreadsheets/d/1v_bBUgIPO26xWM4TOm4kjDcvP8RPeg17FHO5ZqNEFqI/edit`
+
+Each hotel writes to its own sheet tab:
 
 - Hotel Pauwa
 - Hotel Royal Karnali Paradise
 - Kanjirowa Hotel
 
-The spreadsheet link provided as reference is currently an uploaded `.xlsx` file. Apps Script can read/write normal Google Sheets tabs, so convert that file to a native Google Sheet before using it as the live database.
+The spreadsheet link provided as reference was an uploaded `.xlsx` file, so a new native Google Sheet was created for live hotel records.
 
 ## Apps Script Change
 
-Open the Apps Script project used by the current laundry app, then copy the helper code from `hotel-laundry-apps-script.gs`.
+A standalone Apps Script project was created for this hotel page. The deployed web app URL is already set in `hotel-laundry.html`.
 
-At the very top of the existing `doPost(e)` function, add:
+Web app URL:
 
-```js
-if (e.parameter && e.parameter["Record Type"] === "Hotel Laundry") {
-  return handleHotelLaundryPost(e);
-}
-```
+`https://script.google.com/macros/s/AKfycby0iKRbhuV241M3vPJck5PIzqtnG6ihNm3ocRTLsVc30HTtaS5MKuUeWxbewswznAQ/exec`
 
-Leave the old laundry app saving code below that line unchanged.
-
-If the Apps Script is bound to the correct Google Sheet, leave `HOTEL_LAUNDRY_SPREADSHEET_ID` empty. If it is standalone, paste the converted native Google Sheet ID into `HOTEL_LAUNDRY_SPREADSHEET_ID`.
-
-After saving Apps Script, deploy a new web app version with the same access settings as the old laundry app.
+The old laundry app and its Apps Script were not changed.
