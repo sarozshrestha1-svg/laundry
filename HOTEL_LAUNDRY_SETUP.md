@@ -24,6 +24,7 @@ Each hotel writes to its own sheet tab:
 - Hotel Pauwa
 - Hotel Royal Karnali Paradise
 - Kanjirowa Hotel
+- Genz Cafe
 
 The spreadsheet link provided as reference was an uploaded `.xlsx` file, so a new native Google Sheet was created for live hotel records.
 
@@ -33,7 +34,7 @@ A standalone Apps Script project was created for this hotel page. The deployed w
 
 Web app URL:
 
-`https://script.google.com/macros/s/AKfycbyAkNzQkxWkI7fNwUmI7YdpPlWeIBdYPpbSImgAWBbb8SwqCBoA49UiiwSDOm4_Jamc/exec`
+`https://script.google.com/macros/s/AKfycbwXtkYXYDTxhTv8UznkUlwIUFfUZ_kfCOVdMca7thfaZLMpj9Wgq5dSlhDbUghydqlv/exec`
 
 The old laundry app and its Apps Script were not changed.
 

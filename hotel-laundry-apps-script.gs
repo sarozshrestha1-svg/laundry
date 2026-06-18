@@ -13,6 +13,7 @@ const HOTEL_LAUNDRY_SHEETS = {
   "Hotel Pauwa": "Hotel Pauwa",
   "Hotel Royal Karnali Paradise": "Hotel Royal Karnali Paradise",
   "Kanjirowa Hotel": "Kanjirowa Hotel",
+  "Genz Cafe": "Genz Cafe",
 };
 
 const HOTEL_LAUNDRY_HEADERS = [
