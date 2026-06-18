@@ -17,9 +17,7 @@ const HOTEL_LAUNDRY_SHEETS = {
 
 const HOTEL_LAUNDRY_HEADERS = [
   "Date",
-  "Hotel name",
   "Weight in KG",
-  "WhatsApp number",
   "Note",
   "Created timestamp",
 ];
@@ -54,9 +52,7 @@ function handleHotelLaundryPost(e) {
 
   sheet.appendRow([
     data["Date"] || "",
-    hotelName || "",
     data["Weight in KG"] || "",
-    data["WhatsApp Number"] || "",
     data["Note"] || "",
     data["Created Timestamp"] || new Date(),
   ]);
@@ -111,4 +107,52 @@ function setupHotelLaundrySheets() {
   });
 
   return "Hotel laundry sheets are ready.";
+}
+
+function archiveCurrentMonthAndClear() {
+  const spreadsheet = getHotelLaundrySpreadsheet_();
+  const timezone = spreadsheet.getSpreadsheetTimeZone() || "Asia/Kathmandu";
+  const monthName = Utilities.formatDate(new Date(), timezone, "yyyy-MM");
+  const sourceFile = DriveApp.getFileById(spreadsheet.getId());
+  const archiveName = spreadsheet.getName() + " Archive " + monthName;
+
+  sourceFile.makeCopy(archiveName);
+
+  Object.keys(HOTEL_LAUNDRY_SHEETS).forEach(function (hotelName) {
+    const sheet = getOrCreateHotelLaundrySheet_(
+      spreadsheet,
+      HOTEL_LAUNDRY_SHEETS[hotelName],
+    );
+    clearHotelLaundryData_(sheet);
+  });
+
+  return "Archived current month as '" + archiveName + "' and cleared live hotel tabs.";
+}
+
+function clearHotelLaundryDataOnly() {
+  const spreadsheet = getHotelLaundrySpreadsheet_();
+
+  Object.keys(HOTEL_LAUNDRY_SHEETS).forEach(function (hotelName) {
+    const sheet = getOrCreateHotelLaundrySheet_(
+      spreadsheet,
+      HOTEL_LAUNDRY_SHEETS[hotelName],
+    );
+    clearHotelLaundryData_(sheet);
+  });
+
+  return "Cleared live hotel tabs without making an archive copy.";
+}
+
+function clearHotelLaundryData_(sheet) {
+  const lastRow = sheet.getLastRow();
+  const lastColumn = Math.max(sheet.getLastColumn(), HOTEL_LAUNDRY_HEADERS.length);
+
+  sheet.getRange(1, 1, 1, HOTEL_LAUNDRY_HEADERS.length).setValues([
+    HOTEL_LAUNDRY_HEADERS,
+  ]);
+  sheet.setFrozenRows(1);
+
+  if (lastRow > 1) {
+    sheet.getRange(2, 1, lastRow - 1, lastColumn).clearContent();
+  }
 }

@@ -9,9 +9,7 @@ New GitHub Pages page:
 The hotel app sends these fields to a separate hotel-only Apps Script web app:
 
 - Date
-- Hotel Name
 - Weight in KG
-- WhatsApp Number
 - Note
 - Created Timestamp
 - Target Sheet
@@ -35,6 +33,17 @@ A standalone Apps Script project was created for this hotel page. The deployed w
 
 Web app URL:
 
-`https://script.google.com/macros/s/AKfycby0iKRbhuV241M3vPJck5PIzqtnG6ihNm3ocRTLsVc30HTtaS5MKuUeWxbewswznAQ/exec`
+`https://script.google.com/macros/s/AKfycbyAkNzQkxWkI7fNwUmI7YdpPlWeIBdYPpbSImgAWBbb8SwqCBoA49UiiwSDOm4_Jamc/exec`
 
 The old laundry app and its Apps Script were not changed.
+
+## Owner Month Change
+
+The public web app cannot clear or archive data.
+
+Only the Google account that owns the Apps Script can run these owner functions from Apps Script:
+
+- `archiveCurrentMonthAndClear()` - makes an archive copy of the current hotel-record spreadsheet, then clears all hotel tab rows below the headers.
+- `clearHotelLaundryDataOnly()` - clears all hotel tab rows below the headers without making an archive copy.
+
+Use `archiveCurrentMonthAndClear()` at the start of a new month.
